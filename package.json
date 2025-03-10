@@ -19,7 +19,8 @@
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
-    "vite": "^6.2.1"
+    "vite": "^6.2.1",
+    "zod": "^3.24.2"
   },
   "prettier": {
     "useTabs": false,
@@ -28,8 +29,8 @@
     "printWidth": 120
   },
   "dependencies": {
+    "chevrotain": "^11.0.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "chevrotain": "^11.0.3"
+    "react-dom": "^19.0.0"
   }
 }
