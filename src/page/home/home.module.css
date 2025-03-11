@@ -1,11 +1,40 @@
 .wrapper {
-  @apply p-4 flex flex-col gap-4;
+  @apply p-4 grid grid-cols-2 gap-4;
 }
 
 .container {
-  @apply bg-neutral-800 border border-neutral-600 p-4 rounded-md;
+  @apply bg-neutral-900 border border-neutral-600 p-4 rounded-md;
+}
+
+.section {
+  @apply flex flex-col gap-1;
+}
+
+.examples {
+  @apply flex flex-row items-center flex-wrap gap-3;
+
+  & button {
+    @apply bg-teal-800 px-2 py-1 rounded-md duration-300;
+
+    &:hover {
+      @apply bg-teal-600;
+    }
+  }
 }
 
 .input {
-  @apply w-full outline-none;
+  height: 10rem;
+  @apply outline-none;
+
+  &:focus-visible {
+    @apply outline outline-teal-600;
+  }
+}
+
+.result {
+  @apply flex-1;
+
+  & pre {
+    @apply h-full overflow-x-auto;
+  }
 }

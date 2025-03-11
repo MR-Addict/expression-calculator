@@ -3,5 +3,12 @@
 @tailwind utilities;
 
 body {
+  scrollbar-color: #737373 #171717;
   @apply bg-black text-white;
+}
+
+main {
+  height: 100vh;
+  height: 100dvh;
+  @apply flex flex-col;
 }
