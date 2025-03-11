@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
+    "test": "vitest --run",
     "preview": "vite preview",
     "build": "tsc -b && vite build",
     "format": "prettier -c --write ."
@@ -20,6 +21,7 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
     "vite": "^6.2.1",
+    "vitest": "^3.0.8",
     "zod": "^3.24.2"
   },
   "prettier": {

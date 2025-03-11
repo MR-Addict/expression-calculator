@@ -25,6 +25,7 @@ jobs:
           restore-keys: ${{ runner.OS }}-npm-cache-
 
       - run: npm install
+      - run: npm run test
       - run: npm run build
 
       - name: Deploy to github pages

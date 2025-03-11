@@ -1,6 +1,5 @@
 import { IToken } from "chevrotain";
 
-import { validNumber } from "./validNumber";
 import { functions } from "../data/functions";
 import { ParseErrorType, Range } from "../type";
 
@@ -34,7 +33,7 @@ export function validateFunction(
   }
 
   // More than the maximum
-  max = validNumber(max) ? max : min;
+  max = max === undefined ? min : max;
   if (args > max) {
     const message = `Function ${FunctionToken.image} requires at most ${max} arguments`;
     return { message, ...parsedRange.data };

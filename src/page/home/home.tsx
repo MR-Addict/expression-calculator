@@ -4,14 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import style from "./home.module.css";
 
 import { examples } from "@/data/examples";
-import { expressionParse } from "@/lib/parser";
-import { expParams } from "@/lib/lib/expParams";
+import { URLParams } from "@/lib/lib/URLParams";
+import { expressionCalculator } from "@/lib/parser";
 import { ParseResultType } from "@/lib/parser/type";
+
+const expParams = new URLParams("exp", examples[0]);
 
 export default function Home() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [expression, setExpresion] = useState("");
-  const [result, setResult] = useState<ParseResultType>(expressionParse(expression));
+  const [expression, setExpresion] = useState(expParams.value);
+  const [result, setResult] = useState<ParseResultType>(expressionCalculator(expression));
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setExpresion(e.target.value);
@@ -30,8 +32,8 @@ export default function Home() {
 
   useEffect(() => {
     const callback = () => {
-      expParams.set(expression);
-      setResult(expressionParse(expression));
+      expParams.value = expression;
+      setResult(expressionCalculator(expression));
     };
     const timer = setTimeout(callback, 100);
     return () => clearTimeout(timer);
@@ -39,7 +41,7 @@ export default function Home() {
 
   useEffect(() => {
     fouceTextarea();
-    setExpresion(decodeURIComponent(expParams.get()) || examples[0]);
+    setExpresion(expParams.value);
   }, []);
 
   return (
