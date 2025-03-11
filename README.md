@@ -6,6 +6,6 @@ This is a project that implements a simple expression calculator based on [chevr
 - [x] Support for floating point numbers
   - [x] Decimal point
   - [x] Scientific notation
-- [ ] Support for functions
+- [x] Support for functions
 - [ ] Support friendly error messages
 - [ ] Support friendly UI

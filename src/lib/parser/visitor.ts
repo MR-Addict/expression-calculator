@@ -1,10 +1,11 @@
 import { CstNode, tokenMatcher } from "chevrotain";
 
-import { tokens } from "./tokens";
+import { tokens } from "./data/tokens";
+import { functions } from "./data/functions";
+
 import { calculatorParser } from "./parser";
 import { CalculatorVisitorCtx } from "./type";
-
-const isValidNumber = (val: any) => Number.isFinite(val);
+import { validNumber } from "./lib/validNumber";
 
 class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() {
   constructor() {
@@ -23,7 +24,7 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
 
   additionExpression(ctx: CalculatorVisitorCtx): number {
     let res = this.visit(ctx.lhs);
-    if (!isValidNumber(res)) return NaN;
+    if (!validNumber(res)) return NaN;
 
     // "rhs" key may be undefined as the grammar defines it as optional (MANY === zero or more).
     if (ctx.rhs) {
@@ -31,7 +32,7 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
         // there will be one operator for each rhs operand
         let rhsValue = this.visit(rhsOperand);
         let operator = ctx.AdditionOperator[idx];
-        if (!isValidNumber(rhsValue)) return (res = NaN);
+        if (!validNumber(rhsValue)) return (res = NaN);
 
         if (tokenMatcher(operator, tokens.Plus)) {
           res += rhsValue;
@@ -46,7 +47,7 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
 
   multiplicationExpression(ctx: CalculatorVisitorCtx): number {
     let res = this.visit(ctx.lhs);
-    if (!isValidNumber(res)) return NaN;
+    if (!validNumber(res)) return NaN;
 
     // "rhs" key may be undefined as the grammar defines it as optional (MANY === zero or more).
     if (ctx.rhs) {
@@ -54,7 +55,7 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
         // there will be one operator for each rhs operand
         let rhsValue = this.visit(rhsOperand);
         let operator = ctx.MultiplicationOperator[idx];
-        if (!isValidNumber(rhsValue)) return (res = NaN);
+        if (!validNumber(rhsValue)) return (res = NaN);
 
         if (tokenMatcher(operator, tokens.Multi)) {
           res *= rhsValue;
@@ -78,6 +79,8 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
       } else {
         return parseFloat(ctx.Number[0].image);
       }
+    } else if (ctx.function) {
+      return this.visit(ctx.function);
     }
     return NaN;
   }
@@ -86,6 +89,13 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
     // The ctx will also contain the parenthesis tokens, but we don't care about those
     // in the context of calculating the result.
     return this.visit(ctx.expression);
+  }
+
+  function(ctx: CalculatorVisitorCtx): number {
+    const name = ctx.Identifier[0].image;
+    const args = ctx.args?.map((arg) => this.visit(arg)).filter(validNumber) ?? [];
+    const res = functions.find((fn) => fn.name === name)?.method(...args) ?? NaN;
+    return res;
   }
 }
 

@@ -1,5 +1,17 @@
 import { createToken, Lexer } from "chevrotain";
 
+// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
+const WhiteSpace = createToken({
+  name: "WhiteSpace",
+  pattern: /\s+/,
+  group: Lexer.SKIPPED
+});
+
+// Symbols Tokens
+const Comma = createToken({ label: ",", name: "Comma", pattern: /,/ });
+const LParen = createToken({ label: "(", name: "LParen", pattern: /\(/ });
+const RParen = createToken({ label: ")", name: "RParen", pattern: /\)/ });
+
 // using the NA pattern marks this Token class as 'irrelevant' for the Lexer.
 // AdditionOperator defines a Tokens hierarchy but only the leafs in this hierarchy define
 // actual Tokens that can appear in the text
@@ -69,18 +81,13 @@ const IntegerNumber = createToken({
   longer_alt: DecimalNumber
 });
 
-// Other Tokens
-const Comma = createToken({ label: ",", name: "Comma", pattern: /,/ });
-const LParen = createToken({ label: "(", name: "LParen", pattern: /\(/ });
-const RParen = createToken({ label: ")", name: "RParen", pattern: /\)/ });
-
-// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
-const WhiteSpace = createToken({
-  name: "WhiteSpace",
-  pattern: /\s+/,
-  group: Lexer.SKIPPED
+// Identifier, like function name
+const Identifier = createToken({
+  name: "Identifier",
+  pattern: /[a-zA-Z_]\w*/
 });
 
+// Register all the tokens
 export const tokens = {
   WhiteSpace,
   Comma,
@@ -98,5 +105,7 @@ export const tokens = {
   ScientificNumber,
   DecimalNumber,
   IntegerNumber,
-  Number
+  Number,
+
+  Identifier
 };

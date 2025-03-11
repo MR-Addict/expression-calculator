@@ -2,7 +2,7 @@ import { z } from "zod";
 import { CstNode, IToken } from "chevrotain";
 
 // Errors
-const Range = z.object({
+export const Range = z.object({
   startLine: z.number(),
   startColumn: z.number(),
   endLine: z.number(),
@@ -23,8 +23,10 @@ export interface CalculatorVisitorCtx {
   expression: CstNode | CstNode[];
   additionExpression: CstNode | CstNode[];
   parenthesisExpression: CstNode | CstNode[];
+  function: CstNode | CstNode[];
   lhs: CstNode | CstNode[];
   rhs?: CstNode[];
+  args?: CstNode[];
 
   /**
    * Tokens
@@ -48,4 +50,6 @@ export interface CalculatorVisitorCtx {
   DecimalNumber: IToken[];
   IntergerNumber: IToken[];
   Number: IToken[];
+
+  Identifier: IToken[];
 }

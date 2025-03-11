@@ -1,9 +1,9 @@
 import { Lexer } from "chevrotain";
 
-import { tokens } from "./tokens";
+import { tokens } from "./data/tokens";
 import { calculatorParser } from "./parser";
+import { ParseResultType } from "./type";
 import { calculatorVisitor } from "./visitor";
-import { ParseError, ParseErrorType, ParseResultType } from "./type";
 
 const CalculatorLexer = new Lexer(Object.values(tokens), { recoveryEnabled: true });
 
@@ -22,11 +22,7 @@ export function expressionParse(expression: string): ParseResultType {
   const res = calculatorVisitor.visit(cst);
 
   // Collect errors
-  const errors = calculatorParser.errors
-    .map(({ message, token }) => ({ ...token, message }))
-    .map((error) => ParseError.safeParse(error).data ?? null)
-    .filter((error): error is ParseErrorType => error !== null)
-    .map((error) => ({ ...error, startColumn: error.startColumn - 1 }));
+  const errors = calculatorParser.Errors;
 
   return { res, errors };
 }
