@@ -5,11 +5,12 @@ import style from "./home.module.css";
 
 import { examples } from "@/data/examples";
 import { expressionParse } from "@/lib/parser";
+import { expParams } from "@/lib/lib/expParams";
 import { ParseResultType } from "@/lib/parser/type";
 
 export default function Home() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [expression, setExpresion] = useState(examples[0]);
+  const [expression, setExpresion] = useState("");
   const [result, setResult] = useState<ParseResultType>(expressionParse(expression));
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -28,12 +29,18 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const callback = () => setResult(expressionParse(expression));
+    const callback = () => {
+      expParams.set(expression);
+      setResult(expressionParse(expression));
+    };
     const timer = setTimeout(callback, 100);
     return () => clearTimeout(timer);
   }, [expression]);
 
-  useEffect(fouceTextarea, []);
+  useEffect(() => {
+    fouceTextarea();
+    setExpresion(decodeURIComponent(expParams.get()) || examples[0]);
+  }, []);
 
   return (
     <section aria-label="Home" className={style.wrapper}>
