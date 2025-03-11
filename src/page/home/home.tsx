@@ -2,12 +2,13 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 import style from "./home.module.css";
+
 import { expressionParse } from "@/lib/parser";
 import { ParseResultType } from "@/lib/parser/type";
 
 export default function Home() {
-  const [expression, setExpresion] = useState("1 + 2 * 3");
-  const [result, setResult] = useState<ParseResultType>({ res: null, errors: [] });
+  const [expression, setExpresion] = useState("( 1.1 + 2.2 ) * 3.3 - 4.4 * ( 5 / 6 )");
+  const [result, setResult] = useState<ParseResultType>(expressionParse(expression));
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setExpresion(e.target.value);

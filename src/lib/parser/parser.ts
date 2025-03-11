@@ -45,7 +45,7 @@ class CalculatorParser extends CstParser {
         // parenthesisExpression has the highest precedence and thus it appears
         // in the "lowest" leaf in the expression ParseTree.
         { ALT: () => $.SUBRULE($.parenthesisExpression) },
-        { ALT: () => $.CONSUME(tokens.NumberLiteral) }
+        { ALT: () => $.CONSUME(tokens.Number) }
       ])
     );
 

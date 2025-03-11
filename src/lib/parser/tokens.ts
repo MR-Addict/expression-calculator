@@ -44,15 +44,35 @@ const Div = createToken({
   categories: MultiplicationOperator
 });
 
-// Other Tokens
-const LParen = createToken({ label: "(", name: "LParen", pattern: /\(/ });
-const RParen = createToken({ label: ")", name: "RParen", pattern: /\)/ });
-const NumberLiteral = createToken({
-  name: "NumberLiteral",
-  pattern: /[1-9]\d*/
+// Numbers
+const Number = createToken({
+  name: "Number",
+  pattern: Lexer.NA
 });
 
+const ScientificNumber = createToken({
+  name: "ScientificNumber",
+  pattern: /0|[1-9]\d*\.\d+[eE][+-]?\d+/,
+  categories: Number
+});
+
+const DecimalNumber = createToken({
+  name: "DecimalNumber",
+  pattern: /0|[1-9]\d*\.\d+/,
+  categories: Number
+});
+
+const IntegerNumber = createToken({
+  name: "IntegerNumber",
+  pattern: /0|[1-9]\d*/,
+  categories: Number,
+  longer_alt: DecimalNumber
+});
+
+// Other Tokens
 const Comma = createToken({ label: ",", name: "Comma", pattern: /,/ });
+const LParen = createToken({ label: "(", name: "LParen", pattern: /\(/ });
+const RParen = createToken({ label: ")", name: "RParen", pattern: /\)/ });
 
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
 const WhiteSpace = createToken({
@@ -63,14 +83,20 @@ const WhiteSpace = createToken({
 
 export const tokens = {
   WhiteSpace,
-  Plus,
-  Minus,
-  Multi,
-  Div,
+  Comma,
   LParen,
   RParen,
-  NumberLiteral,
+
+  Plus,
+  Minus,
   AdditionOperator,
+
+  Multi,
+  Div,
   MultiplicationOperator,
-  Comma
+
+  ScientificNumber,
+  DecimalNumber,
+  IntegerNumber,
+  Number
 };

@@ -4,7 +4,7 @@ import { tokens } from "./tokens";
 import { calculatorParser } from "./parser";
 import { CalculatorVisitorCtx } from "./type";
 
-type CalculatorVisitorResult = number | null;
+const isValidNumber = (val: any) => Number.isFinite(val);
 
 class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() {
   constructor() {
@@ -12,20 +12,18 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
     this.validateVisitor();
   }
 
-  // Override the visit method to return CalculatorVisitorResult
-  visit(node: CstNode | CstNode[]): CalculatorVisitorResult {
-    return super.visit(node) as CalculatorVisitorResult;
+  // Override the visit method to return number
+  visit(node: CstNode | CstNode[]): number {
+    return super.visit(node) as number;
   }
 
-  expression(ctx: CalculatorVisitorCtx): CalculatorVisitorResult {
+  expression(ctx: CalculatorVisitorCtx): number {
     return this.visit(ctx.additionExpression);
   }
 
-  additionExpression(ctx: CalculatorVisitorCtx): CalculatorVisitorResult {
-    const res = this.visit(ctx.lhs);
-    if (res === null) return null;
-
-    let newRes = res;
+  additionExpression(ctx: CalculatorVisitorCtx): number {
+    let res = this.visit(ctx.lhs);
+    if (!isValidNumber(res)) return NaN;
 
     // "rhs" key may be undefined as the grammar defines it as optional (MANY === zero or more).
     if (ctx.rhs) {
@@ -33,24 +31,22 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
         // there will be one operator for each rhs operand
         let rhsValue = this.visit(rhsOperand);
         let operator = ctx.AdditionOperator[idx];
-        if (rhsValue === null) return;
+        if (!isValidNumber(rhsValue)) return (res = NaN);
 
         if (tokenMatcher(operator, tokens.Plus)) {
-          newRes += rhsValue;
+          res += rhsValue;
         } else {
-          newRes -= rhsValue;
+          res -= rhsValue;
         }
       });
     }
 
-    return newRes;
+    return res;
   }
 
-  multiplicationExpression(ctx: CalculatorVisitorCtx): CalculatorVisitorResult {
-    const res = this.visit(ctx.lhs);
-    if (res === null) return null;
-
-    let newRes = res;
+  multiplicationExpression(ctx: CalculatorVisitorCtx): number {
+    let res = this.visit(ctx.lhs);
+    if (!isValidNumber(res)) return NaN;
 
     // "rhs" key may be undefined as the grammar defines it as optional (MANY === zero or more).
     if (ctx.rhs) {
@@ -58,32 +54,35 @@ class CalculatorVisitor extends calculatorParser.getBaseCstVisitorConstructor() 
         // there will be one operator for each rhs operand
         let rhsValue = this.visit(rhsOperand);
         let operator = ctx.MultiplicationOperator[idx];
-        if (rhsValue === null) return;
+        if (!isValidNumber(rhsValue)) return (res = NaN);
 
         if (tokenMatcher(operator, tokens.Multi)) {
-          newRes *= rhsValue;
+          res *= rhsValue;
         } else {
-          newRes /= rhsValue;
+          res /= rhsValue;
         }
       });
     }
 
-    return newRes;
+    return res;
   }
 
-  atomicExpression(ctx: CalculatorVisitorCtx): CalculatorVisitorResult {
+  atomicExpression(ctx: CalculatorVisitorCtx): number {
     if (ctx.parenthesisExpression) {
       // passing an array to "this.visit" is equivalent
       // to passing the array's first element
       return this.visit(ctx.parenthesisExpression);
-    } else if (ctx.NumberLiteral) {
-      // If a key exists on the ctx, at least one element is guaranteed
-      return parseInt(ctx.NumberLiteral[0].image);
+    } else if (ctx.Number) {
+      if (tokenMatcher(ctx.Number[0], tokens.IntegerNumber)) {
+        return parseInt(ctx.Number[0].image);
+      } else {
+        return parseFloat(ctx.Number[0].image);
+      }
     }
-    return null;
+    return NaN;
   }
 
-  parenthesisExpression(ctx: CalculatorVisitorCtx): CalculatorVisitorResult {
+  parenthesisExpression(ctx: CalculatorVisitorCtx): number {
     // The ctx will also contain the parenthesis tokens, but we don't care about those
     // in the context of calculating the result.
     return this.visit(ctx.expression);
