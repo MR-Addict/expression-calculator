@@ -26,3 +26,8 @@ export function expressionCalculator(expression: string): ParseResultType {
 
   return { res, errors };
 }
+
+/**
+ * Call before all tests
+ */
+expressionCalculator("1 + 2 * 3");
