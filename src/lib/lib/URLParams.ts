@@ -8,15 +8,15 @@ export class URLParams {
   }
 
   get value() {
-    const exp = new URLSearchParams(window.location.search).get(this.key);
-    if (exp) return decodeURIComponent(exp);
+    const val = new URLSearchParams(window.location.search).get(this.key);
+    if (val) return decodeURIComponent(val);
     return this.defaultValue;
   }
 
-  set value(exp: string) {
+  set value(val: string) {
     const url = new URL(window.location.href);
-    if (exp) url.searchParams.set(this.key, exp);
-    else url.searchParams.delete(this.key);
+    if (!val) url.searchParams.delete(this.key);
+    else if (val !== this.value) url.searchParams.set(this.key, val);
     window.history.replaceState({}, "", url.toString());
   }
 }
